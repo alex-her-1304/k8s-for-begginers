@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dnstool
+  labels:
+    app: dnstool
+spec:
+  containers:
+  - name: dnstool
+    image: nicolaka/netshoot:latest
+    command: ['sleep', '36000']
+    env:
+      - name: HELLO_WORLD
+        value: "hola"

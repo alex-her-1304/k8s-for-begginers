@@ -1,0 +1,85 @@
+╰─➤  helm install test-first-chart ./first-chart --dry-run --debug --set 'message=HOLA MUNDO'                                     130 ↵
+install.go:225: 2025-05-20 10:40:59.895645819 -0300 -03 m=+0.060297406 [debug] Original chart version: ""
+install.go:242: 2025-05-20 10:40:59.895706654 -0300 -03 m=+0.060358661 [debug] CHART PATH: /home/agustin-her/craftech/k8s-for-begginers/helm/create-chart/first-chart
+
+NAME: test-first-chart
+LAST DEPLOYED: Tue May 20 10:40:59 2025
+NAMESPACE: default
+STATUS: pending-install
+REVISION: 1
+TEST SUITE: None
+USER-SUPPLIED VALUES:
+message: HOLA MUNDO
+
+COMPUTED VALUES:
+affinity: {}
+autoscaling:
+  enabled: false
+  maxReplicas: 100
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+fullnameOverride: ""
+image:
+  pullPolicy: IfNotPresent
+  repository: nginx
+  tag: ""
+imagePullSecrets: []
+ingress:
+  annotations: {}
+  className: ""
+  enabled: false
+  hosts:
+  - host: chart-example.local
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls: []
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+message: HOLA MUNDO
+nameOverride: ""
+nodeSelector: {}
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+replicaCount: 1
+resources: {}
+securityContext: {}
+service:
+  port: 80
+  type: ClusterIP
+serviceAccount:
+  annotations: {}
+  automount: true
+  create: true
+  name: ""
+tolerations: []
+volumeMounts: []
+volumes: []
+
+HOOKS:
+MANIFEST:
+---
+# Source: first-chart/templates/deployment.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dnstool
+  namespace: monitoring
+  labels:
+    app: dnstool
+spec:
+  containers:
+  - name: dnstool
+    image: nicolaka/netshoot:latest
+    command: ["/bin/sh"]
+    env:
+      - name: MENSAJE
+        value: "EMPTY"
+    args: ['-c', 'echo $MENSAJE', 'sleep 1000']

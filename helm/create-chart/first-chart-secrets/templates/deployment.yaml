@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dnstool-deployment
+  labels:
+    app: dnstool
+spec:
+  selector:
+    matchLabels:
+      app: dnstool
+  replicas: 1
+  template:
+    metadata:
+      name: dnstool
+      labels:
+        app: dnstool
+    spec:
+      containers:
+      - name: dnstool
+        image: nicolaka/netshoot:latest
+        command: ["/bin/sh"]
+        env:
+          - name: SECRET_MESSAGE
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: secret-message
+        args: ['-c', 'echo $SECRET_MESSAGE; sleep 1000']
