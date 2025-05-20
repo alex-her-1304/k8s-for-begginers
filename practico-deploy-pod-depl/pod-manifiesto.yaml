@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  containers:
+  - name: app
+    image: busybox
+    command: ["/bin/sh"]
+    args: ['-c', 'while true; do echo "Hola son las "$(date +%X)" y mi ip es "$(hostname -i)""; sleep 10; done']

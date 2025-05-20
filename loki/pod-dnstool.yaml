@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dnstool
+  namespace: monitoring
+  labels:
+    app: dnstool
+spec:
+  containers:
+  - name: dnstool
+    image: nicolaka/netshoot:latest
+    command: ['sleep', '36000']

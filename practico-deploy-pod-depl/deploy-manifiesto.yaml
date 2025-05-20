@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: app
+  labels:
+    name: app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: app
+  template:
+    metadata:
+      labels:
+        name: app
+    spec:
+      containers:
+      - image: busybox
+        imagePullPolicy: Always
+        name: app
+        command: ["/bin/sh"]
+        args: ['-c', 'while true; do echo "Hola son las "$(date +%X)" y mi ip es "$(hostname -i)""; sleep 10; done']

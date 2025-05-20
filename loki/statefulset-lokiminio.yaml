@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: loki
+    meta.helm.sh/release-namespace: dev
+  creationTimestamp: "2025-05-16T16:02:31Z"
+  generation: 1
+  labels:
+    app: minio
+    app.kubernetes.io/managed-by: Helm
+    chart: minio-5.4.0
+    heritage: Helm
+    release: loki
+  name: loki-minio
+  namespace: dev
+  resourceVersion: "5749"
+  uid: e49c7abc-741e-4a2c-955a-0aa7c114cb38
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: minio
+      release: loki
+  serviceName: loki-minio-svc
+  template:
+    metadata:
+      annotations:
+        checksum/config: c6991decd6e21178368a30e50fface4a5e2be73d6f997ade38de9d235be74fb5
+        checksum/secrets: a24420cd2e540a1a4450d0c9c9eec9c54974c87203e17500a7e7ab32e762b639
+      creationTimestamp: null
+      labels:
+        app: minio
+        release: loki
+      name: loki-minio
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -ce
+        - /usr/bin/docker-entrypoint.sh minio server http://loki-minio-{0...0}.loki-minio-svc.dev.svc/export-{0...1}
+          -S /etc/minio/certs/ --address :9000 --console-address :9001
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              key: rootUser
+              name: loki-minio
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: rootPassword
+              name: loki-minio
+        - name: MINIO_PROMETHEUS_AUTH_TYPE
+          value: public
+        image: quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z
+        imagePullPolicy: IfNotPresent
+        name: minio
+        ports:
+        - containerPort: 9000
+          name: http
+          protocol: TCP
+        - containerPort: 9001
+          name: http-console
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          readOnlyRootFilesystem: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /export-0
+          name: export-0
+        - mountPath: /export-1
+          name: export-1
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsUser: 1000
+      serviceAccount: minio-sa
+      serviceAccountName: minio-sa
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: minio-user
+        secret:
+          defaultMode: 420
+          secretName: loki-minio
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      name: export-0
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      name: export-1
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+status:
+  availableReplicas: 0
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: loki-minio-75c9766cc8
+  observedGeneration: 1
+  replicas: 1
+  updateRevision: loki-minio-75c9766cc8
+  updatedReplicas: 1
